@@ -1,0 +1,14 @@
+  Method                                        Continuous Data   Categorical Data
+  --------------------------------------------- ----------------- ------------------
+  Additive Noise                                X                 
+  Data Distortion by Probability Distribution   X                 X
+  Micro-aggregation                             X                 
+  Re-sampling                                   X                 
+  Lossy Compression                             X                 
+  Multiple Imputation                           X                 
+  Camouflage                                    X                 
+  PRAM                                                            X
+  Rank Swapping                                 X                 X
+  Rounding                                      X                 
+
+  : Perturbative Methods<span data-label="my-label"></span>
