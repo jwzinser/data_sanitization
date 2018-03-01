@@ -6,7 +6,6 @@ date: "2018/03/15"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    yolo: true
     nature:
       highlightStyle: github
       highlightLines: true
@@ -19,18 +18,12 @@ class: center, middle
 # Negative DB Approach
 ---
 class: inverse, center, middle
-
-
 # Introduction, why is data privacy important?
-
 ---
 class: inverse, middle
 # Two types of data privacy:
-## Disk Sanitization that prevents access: weak erase (deleting files), block
-erase (overwrite by external software), normal secure erase (current drives), and
-enhanced secure erase (see below). Encrytpion is an example here. Recovery means recovering the data from disk.
+## Disk Sanitization that prevents access: weak erase (deleting files), block erase (overwrite by external software), and encrytpion. Recovery means recovering the data from disk.
 ## Data sanitization that allows access to data: this presentation will focus on this type of sanitization. You have access to the data but recovery means to identify the original values.
-
 ---
 class: inverse, center, middle
 
@@ -49,55 +42,28 @@ class: inverse, center, middle
 # Natural Trade-Off
 # Neflix price example: Ratings from Netflix DB were linked to IMBD ratings, where name is public, and some sensitive content movie ratings where released.
 ---
-class: center, middle
-| Method                                       | Continuous Data  | Categorical Data  |
-| ---------------------------------------------| -----------------| ------------------|
-| Additive Noise                               | X                |                   |  
-| Data Distortion by Probability Distribution  | X                |  X                | 
-| Micro-aggregation                            | X                |                   | 
-| Re-sampling                                  | X                |                   | 
-| Lossy Compression                            | X                |                   | 
-| Multiple Imputation                          | X                |                   | 
-| Camouflage                                   | X                |                   | 
-| PRAM                                         |                  |  X                | 
-| Rank Swapping                                | X                |  X                | 
-| Rounding                                     | X                |                   | 
+# Examples with: telephone, zipcode, coordinates, continous numbers
+| Value                         | Sanitized Value          | Method Used            |
+| ------------------------------| -------------------------| ---------------------- |
+| 03100                         | 031**                    | Truncation             |  
+| 19.423780, -99.159947         | 19.423, -99.159          | Truncation / Rounding  | 
+| 19.423780, -99.159947         | 19.424583, -99.162479    | Additive Noise         | 
+| 2nd grade                     | Primary Education        | Generalization         | 
+| [1,0,0]                       | [0,0.5,0.5]              | Negative DB Approach   | 
+| [ 0.45, 0.22, -0.33]          | [ 0.48, 0.89, -0.76]     | Re-Sampling            |
+| [1, 5, 7]                     | 4.33                     | Microaggregation (avg) |
+| [1,2,3,4,5,6,7,8,9,10]        | [2,1,3,5,4,8,9,6,7,10]   | Rank Swapping          |
+| [0.5,1,1.5,2.0]               | [(0-1],(0-1],(1-2],(1-2)]| Camouflage (discretize)|
 ---
-class: center, middle
-# NIST 800-88 defines this protocols for user data sanitization: disposal, clearing, purging and destroying.
-# Disposal:
-# Clearing:
-# Purging:
-# Destroying: 
-
----
-# Examples with: telephone, zipcode, coordinates
-| Value                         | Sanitized Value        | Method Used          |
-| ------------------------------| ---------------------- | ---------------------|
-| 03100                         | 031**                  | Truncation           |  
-| 19.423780, -99.159947         | 19.423, -99.159        | Truncation           | 
-| 19.423780, -99.159947         | 19.424583, -99.162479  | Random Noise         | 
-| 2nd grade                     | Primary Education      | Generalization       | 
-| [1,0,0]                       | [1,0,0]                | Negative DB Approach | 
-| Multiple Imputation           | X                      |                      | 
-| Camouflage                    | X                      |                      | 
-| PRAM                          |                        |  X                   | 
-| Rank Swapping                 | X                      |  X                   | 
-| Rounding                      | X                      |                      |
----
-class: center, middle
+class: inverse, center, middle
 # Now the Negative DB approach of sanitization process will be introduced.
 ---
-class center, middle
-# One hot encoding motivation
 background-image: url(file:///home/juanzinser/Pictures/onehot_operator.png)
 ---
-class center, middle
-
+class: center, middle
 # Operator description
 ## Include Real, Privacy, Distribution
 ---
-class center, middle
 # Income Dataset for supervised learning
 | Column         | nclasses |
 |----------------|----------|
@@ -109,15 +75,17 @@ class center, middle
 | sex            | 2        |
 | native-country | 42       |
 ---
-
+class: inverse
+background-image: url(file:///home/juanzinser/Documents/plots/income_roc_privacy_grouped_tmf.png)
+---
+class: inverse
 background-image: url(file:///home/juanzinser/Documents/plots/supervised_auc_gb_tmf_01.png)
 ---
-class: center, middle
+class: inverse
 background-image: url(file:///home/juanzinser/Documents/plots/uniform_model.png)
 ---
-class: center, middle
+class: inverse
 background-image: url(file:///home/juanzinser/Documents/plots/include_real_model.png)
 ---
-class: center, middle
+class: inverse
 background-image: url(file:///home/juanzinser/Documents/plots/auc_model_privacy.png)
-

@@ -1,0 +1,116 @@
+---
+title: "Data Day Sanitization"
+subtitle: "Perspectiva de Bases de Datos Negativas"
+author: "Juan Zinser"
+date: "2018/03/15"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+class: center, middle
+
+# Privacidad de Datos
+# Métodos de Sanitización
+# Enfoque Bases de Datos Negativas
+---
+class: inverse, center, middle
+# ¿Por qué es importante la privacidad de datos?
+---
+class: inverse, middle
+# Dos tipos de sanitización de bases:
+## Seguridad: impedir el acceso a los datos.
+## Privacidad: tener un acceso contrado a los datos.
+---
+class: inverse, center, middle
+# Privacidad de datos
++ ##¿Por qué es importante que los datos sean públicos?
+## Propician mejores políticas públicas
+## Incrementan la eficiencia de servicios
+## Mejoran la transparencia
+---
+class: inverse, left, middle
+# Modelos de ataque contra bases de datos
++ ## Attribute Leakage. 
++ ## Record Linkage. Concurso de Netflix.
+---
+class: center, middle
+# Intercambio Natural
+## 100% Utilidad - 0% Privacidad
+## 0% Utilidad - 100% Privacidad
+| Producto                  | Cantidad | Precio |
+|---------------------------|----------|--------|
+| Leche Deslactosada Borden | 2        | 15     |
+| Leche Chocolate Borden    | 3        | 17     |
+| Queso Manchego Nochebuena | 1        | 40     |
+| Detergente Ariel          | 1        | 70     |
+# 
+| Producto          | Cantidad | Subtotal |
+|-------------------|----------|----------|
+| Lácteos           | 6        | 121      |
+| Artículo Limpieza | 1        | 70       |
+---
+# Tipos de Sanitización
+.pull-left[
+Truncado;
+Ruido Aleatorio;
+Sampleo;
+Discretización;
+]
+
+.pull-right[
+Redondeo;
+Generalización;
+Microagregación;
+Bases Negativas;
+]
+# 
+| Valor Original | Valor Sanitizado  | Método           |
+| ---------------| ------------------| ---------------- |
+| [1,0,0]        | [0,0.5,0.5]       | Bases Negativas  |  
+
+---
+background-image: url(file:///home/juanzinser/Pictures/onehot_operator.png)
+---
+# Ventajas de las bases de datos negativas
+## Mayor grado de automatización
+##
+---
+class: center, middle
+# Características del operador propuesto
+## Inclusión del valor real
+## Privacidad 
+## Distribución de peso
+---
+# Resultados del operador sobre una base de datos
+## Ejemplo 
+| Columna           | Núm. Clases |
+|-------------------|-------------|
+| categoría laboral | 9           |
+| educación         | 16          |
+| estado civil      | 7           |
+| ocupación         | 15          |
+| raza              | 5           |
+| género            | 2           |
+| país orígen       | 42          |
+---
+class: inverse
+background-image: url(file:///home/juanzinser/Documents/plots/income_roc_privacy_grouped_tmf.png)
+---
+class: inverse
+background-image: url(file:///home/juanzinser/Documents/plots/auc_real_privacy.png)
+---
+class: inverse
+background-image: url(file:///home/juanzinser/Documents/plots/auc_uniform_privacy.png)
+---
+class: inverse
+background-image: url(file:///home/juanzinser/Documents/plots/uniform_model.png)
+---
+class: inverse
+background-image: url(file:///home/juanzinser/Documents/plots/include_real_model.png)
+---
+class: inverse
+background-image: url(file:///home/juanzinser/Documents/plots/auc_model_privacy.png)
