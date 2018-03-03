@@ -1,12 +1,14 @@
 ---
-title: "Data Day Sanitization"
+title: "Sanitization"
 subtitle: "Perspectiva de Bases de Datos Negativas"
 author: "Juan Zinser"
 date: "2018/03/15"
 output:
   xaringan::moon_reader:
+    css: ["default", "portada.css"]
     lib_dir: libs
     nature:
+      ratio: '16:9'
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
@@ -55,18 +57,25 @@ class: center, middle
 ---
 # Tipos de Sanitización
 .pull-left[
-Truncado;
-Ruido Aleatorio;
-Sampleo;
-Discretización;
+Truncado
+
+Ruido Aleatorio
+
+Sampleo
+
+Discretización
 ]
 
 .pull-right[
-Redondeo;
-Generalización;
-Microagregación;
-Bases Negativas;
+Redondeo
+
+Generalización
+
+Microagregación
+
+Bases Negativas
 ]
+# 
 # 
 | Valor Original | Valor Sanitizado  | Método           |
 | ---------------| ------------------| ---------------- |
@@ -114,3 +123,21 @@ background-image: url(file:///home/juanzinser/Documents/plots/include_real_model
 ---
 class: inverse
 background-image: url(file:///home/juanzinser/Documents/plots/auc_model_privacy.png)
+---
+class: middle, center, inverse
+background-image: url(resources/DataDay-logo.png)
+background-size: 256px
+background-position: 93% 5%
+## ¡Gracias!
+
+github: [jwzinser](https://github.com/jwzinser)
+
+### Referencias
+[*Dwork*](http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/090310.pdf) - Cynthia Dwork 
+
+[*Esponda*](http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/090310.pdf) - Fernando Esponda 
+
+
+.footnote[ 
+  [Repositorio con la plática](http://github.com/jwzinser/data_sanitization): jwzinser/data_sanitization 
+]
