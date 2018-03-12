@@ -125,27 +125,44 @@ class: center, middle
 | país orígen       | 42          |
 ---
 class: inverse
+# Dentro del intercambio de Privacidad-Utilidad, únicamente nos efocaremos en Utilidad.
 # Dos formas de medir la utilidad de la tabla.
++ ## Utilidad medida por medio de métodos de aprendizaje de máquina.
++ ## Utilidad medida por medio de reconstrucción de histogramas. 
+---
+class: center, bottom, inverse
+background-image: url(file:///home/juanzinser/Documents/plots/dataday/privacy_is_real.png)
+background-size: 512px
+background-position: 42% 10%
 ## Utilidad medida por medio de métodos de aprendizaje de máquina.
-## Utilidad medida por medio de reconstrucción de histogramas. 
+## No incluir el valor real presenta una mejor utilidad.
 ---
-class: inverse
-background-image: url(file:///home/juanzinser/Documents/plots/privacy_is_real.png)
-## Utility through Machine Learning models
+class: center, bottom, inverse
+background-image: url(file:///home/juanzinser/Documents/plots/dataday/privacy_auc_bar_t.png)
+background-size: 512px
+background-position: 42% 10%
+## Destaca la estabilidad en los dos "escalones".
 ---
-class: inverse
-background-image: url(file:///home/juanzinser/Documents/plots/privacy_auc_bar_t.png)
+class: center, bottom, inverse
+background-image: url(file:///home/juanzinser/Documents/plots/dataday/privacy_auc_bar_f.png)
+background-size: 512px
+background-position: 42% 10%
+## Destaca la pendiente positiva en los primeros niveles de privacidad.
 ---
-class: inverse
-background-image: url(file:///home/juanzinser/Documents/plots/privacy_auc_bar_f.png)
+class: center, bottom, inverse
+background-image: url(file:///home/juanzinser/Documents/plots/dataday/uniform_model.png)
+background-size: 512px
+background-position: 42% 10%
+## No pareece haber efecto del modelo con la deistribución de pesos.
 ---
-class: inverse
-background-image: url(file:///home/juanzinser/Documents/plots/uniform_model.png)
+class: center, bottom, inverse
+background-image: url(file:///home/juanzinser/Documents/plots/dataday/include_real_model.png)
+background-size: 512px
+background-position: 45% 5%
+## El modelo Naive Bayes tiene un mejor desempeño cuando el valor real no es incluido sobre el árbol de regresión, mientras que los demás modelos tienen un comportamiento independiente de la inclusión del valor real.
 ---
-class: inverse
-background-image: url(file:///home/juanzinser/Documents/plots/include_real_model.png)
----
-class: center, middle
+class: center, bottom
+## Ejemplo de reconstrucción de histograma
 
 |Original|0|1|2| |Sanitizada|0|1|2|
 |--|--|--|--|--|--|--|--|--|
@@ -161,16 +178,24 @@ class: center, middle
 |9|0.0|0.0|1.0||9|0.5|0.5|0.0|
 |total|8.0|1.0|1.0||total|1.0|4.5|4.5|
 ---
-class: center, middle
-background-image: url(file:///home/juanzinser/Documents/plots/reconstruction_simulated_example.png)
+class: center, bottom, inverse
+background-image: url(file:///home/juanzinser/Documents/plots/dataday/reconstruction_simulated_example.png)
+background-size: 512px
+background-position: 42% 10%
+## Ejemplo de reconstrucción de histograma
+## Chi-cuadrada `\(\chi^2  = \sum_{i=1}^n\frac{(NIS_i-CIS_i)^2}{CIS_i}\)`
 ---
-class: inverse
-background-image: url(file:///home/juanzinser/Documents/plots/privacy.png)
-## Utility through histogram reconstruction. 
+class: center, bottom, inverse
+background-image: url(file:///home/juanzinser/Documents/plots/dataday/privacy.png)
+background-size: 512px
+background-position: 42% 10%
+## Después de un nivel de privacidad mayor al 40%, pierde relevancia la inclusión o no inclusión del valor real. 
 ---
-class: inverse
-background-image: url(file:///home/juanzinser/Documents/plots/nclasses.png)
-## Utility through histogram reconstruction. 
+class: center, bottom, inverse
+background-image: url(file:///home/juanzinser/Documents/plots/dataday/nclasses.png)
+background-size: 512px
+background-position: 42% 10%
+## El pero desempeño ocurre cuando la distribución de los datos es uniforme y los datos originales tienen una distribución exponencial.
 ---
 class: middle, center, inverse
 background-image: url(resources/DataDay-logo.png)
@@ -184,7 +209,6 @@ github: [jwzinser](https://github.com/jwzinser)
 [*Dwork*](http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/090310.pdf) - Cynthia Dwork 
 
 [*Esponda*](http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/090310.pdf) - Fernando Esponda 
-
 
 .footnote[ 
   [Repositorio con la plática](http://github.com/jwzinser/data_sanitization): jwzinser/data_sanitization 
