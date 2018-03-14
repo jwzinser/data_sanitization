@@ -2,11 +2,13 @@ import pandas as pn
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn import preprocessing, metrics, linear_model, metrics, svm, naive_bayes, tree
-import warnings
-warnings.filterwarnings('ignore')
 from collections import Counter
+import sys
 
-figures_path = "/home/juanzinser/Documents/plots/"
+
+figures_path = "/home/juanzinser/Documents/plots/" if sys.platform == "linux" \
+    else "/Users/juanzinser/Documents/plots/"
+
 
 def expo_weights(nclasses):
     weights = list()
@@ -192,21 +194,49 @@ def get_auc_score_of_model(df, model):
     return prediction_error, roc_auc, roc_curve
 
 
+english_dict = {"t": "include",
+                "f": "not-include",
+                "m": "maybe",
+                "privacy": "privacy",
+                "nclasses": "nclasses",
+                "real": "include real"}
 
-def get_label_name(param_dict, ln=False):
+spanish_dict = {"t": "incluido",
+                "f": "no-incluido",
+                "m": "tal vez",
+                "nclasses": "Total Clases",
+                "privacy": "dispersión",
+                "real": "incluir real",
+                "auc": "area bajo la curva"}
+
+
+def label_rename(label_list, language="english"):
+
+    relabel_dict = english_dict if language == "english" else spanish_dict
+    relabel_list = list()
+    for lab in label_list:
+        new_lab = relabel_dict.get(lab) if relabel_dict.get(lab) is not None else lab
+        relabel_list.append(new_lab)
+    return relabel_list
+
+
+def get_label_name(param_dict, l_name=False, language="english"):
     """
     Gets the name of the label from the parameters being used.
 
     """
     param_list = [("privacy", "P={val}"), ("real", " R={val}"), ("uniform", " U={val}"),
-                  ("uniform2"," U2={val}"), ("uniform_original", " UO={val}"), ("model"," M={val}")]
+                  ("uniform_original", " UO={val}"), ("model", " M={val}")]
     label_name = ""
     label_values = ""
+    dict_use = english_dict if language=="english" else spanish_dict
     for param, valpar in param_list:
         if param_dict.get(param) is not None:
-            label_name += valpar.format(val=str(param_dict.get(param)))
-            label_values += str(param_dict.get(param))
-    if ln:
+            original_value = str(param_dict.get(param))
+            std_value = dict_use.get(original_value) if dict_use.get(original_value) else original_value
+            label_name += valpar.format(val=std_value)
+            label_values += std_value
+    if l_name:
         return label_name
     else:
         return label_values
@@ -220,7 +250,7 @@ def get_single_filter_df(df, k, v):
         v = [v] if not isinstance(v, list) else v
         if k in df.columns:
             if np.issubdtype(df[k].dtype , np.number):
-                cond = " | ".join(["{k} == {val}".format(k=k, val=v0) for v0 in v])
+                cond = " | ".join(["{k} == {val}".format(k=k, val=float(v0)) for v0 in v])
                 df = df.query(cond)
             else:
                 cond = " | ".join(["{k} == '{val}'".format(k=k, val=v0) for v0 in v])
@@ -239,7 +269,8 @@ def get_base_filtered_df(df, base_filter=None):
     return df
 
 
-def plot_bars(df, gb_param, yaxis, base_filter, lines_cases, savefig=False,  title=None, save_name=None, width_delta=.2):
+def plot_bars(df, gb_param, yaxis, base_filter, lines_cases, savefig=False,  title=None, save_name=None,
+              width_delta=.2, language="english"):
     """
     Returns a line plot with quantile intervals of the RMSE of different levels of either privacy or number of classes.
     Works only for the non-supervised datasets since there are multiples simulations for provacy levels and numberr of classes.
@@ -265,16 +296,15 @@ def plot_bars(df, gb_param, yaxis, base_filter, lines_cases, savefig=False,  tit
                 gb = dfc.groupby([gb_param])[yaxis].mean().reset_index()
                 gb2 = dfc.groupby([gb_param])[yaxis].std().reset_index()
 
-                x = gb[gb_param].unique() 
+                x = gb[gb_param].unique()
                 ind = np.arange(len(x))
                 curr_p = ax.bar(ind + width, gb[yaxis], width_delta, color=np.random.rand(3,),
                                 bottom=0, yerr=gb2[yaxis])
                 ps.append(curr_p)
                 param_dict = {k: v0}
-                tt = get_label_name(param_dict, True)
+                tt = get_label_name(param_dict, True, language)
                 labels.append(tt)
                 width += width_delta
-
     else:
         gb = df.groupby([gb_param])[yaxis].mean().reset_index()
         gb2 = df.groupby([gb_param])[yaxis].std().reset_index()
@@ -284,26 +314,161 @@ def plot_bars(df, gb_param, yaxis, base_filter, lines_cases, savefig=False,  tit
         curr_p = ax.bar(ind+width, gb[yaxis], width_delta, color=np.random.rand(3,),
                         bottom=0, yerr=gb2[yaxis])
         ps.append(curr_p)
-        tt = get_label_name(base_filter, True)
+        tt = get_label_name(base_filter, True, language)
         labels.append(tt)
         width += width_delta
-
-
 
     ax.set_title(title)
     ax.set_xticks(ind + width_delta / 2)
     ax.set_ylabel(yaxis)
-    ax.set_xticklabels(x, rotation = 45, ha="right")
-    ax.legend([p[0] for p in ps], labels)
+    x = label_rename(x, language)
+    ax.set_xticklabels(x, rotation=45, ha="right")
+    ax.legend([list(p)[0] for p in ps], labels)
 
+    dict_use = english_dict if language == "english" else spanish_dict
+    gb_param = dict_use.get(gb_param.lower()) if dict_use.get(gb_param.lower()) else gb_param
+    yaxis = dict_use.get(yaxis.lower()) if dict_use.get(yaxis.lower()) else yaxis
     ax.set_xlabel(gb_param.upper())
     ax.set_ylabel(yaxis.upper())
+    plt.tight_layout()
     if savefig:
         plt.savefig(figures_path + save_name + ".png")
     plt.show()
 
 
-def plot_intervals(df, gb_param, yaxis, base_filter, lines_cases, savefig=False,  title=None, save_name=None):
+def plot_bars_single_chunk(df, gb_param, yaxis, base_filter, lines_cases, savefig=False, title=None, save_name=None,
+                  width_delta=.2, language="english"):
+    """
+    Returns a line plot with quantile intervals of the RMSE of different levels of either privacy or number of classes.
+    Works only for the non-supervised datasets since there are multiples simulations for provacy levels and numberr of classes.
+    """
+    colors2 = {0:"b",1:"r","t":"g", "f":"r","m":"b"}
+
+    fig, ax = plt.subplots()
+    pt = base_filter.get("privacy")
+    if pt is not None:
+        base_filter.pop("privacy")
+        df = df.query("privacy < {pt}".format(pt=pt))
+    df = df[df.uniform == df.uniform2]
+    df = get_base_filtered_df(df, base_filter)
+    ps = list()
+    labels = list()
+    width = 0
+    xticks = list()
+    xticks_locs = list()
+    citer=0
+    tendency_points = list()
+    if len(lines_cases) > 0:
+        for k, v in lines_cases.items():
+            v = [v] if not isinstance(v, list) else v
+            for v0 in v:
+
+                dfc = get_single_filter_df(df, k, str(v0))
+
+                gb = dfc.groupby([gb_param])[yaxis].mean().reset_index()
+                gb2 = dfc.groupby([gb_param])[yaxis].std().reset_index()
+
+                x = gb[gb_param].unique()
+                xticks.extend(x)
+                ind = np.arange(len(x))
+                xticks_locs.extend(ind+width)
+                tendency_points.append((ind + width, gb[yaxis]))
+                curr_p = ax.bar(ind + width, gb[yaxis], width_delta, color=colors2[citer % 2],
+                                bottom=0, yerr=gb2[yaxis]) if gb_param == "privacy" else \
+                    ax.bar(ind + width, gb[yaxis], width_delta, color=colors2[v0],
+                                bottom=0, yerr=gb2[yaxis])
+                citer += 1
+                ps.append(curr_p)
+                param_dict = {k: v0}
+                tt = get_label_name(param_dict, True, language)
+                labels.append(tt)
+                width += width_delta
+    ax.plot([t1[0] for t1 in tendency_points], [t1[1] for t1 in tendency_points], lw=5, c="k")
+    ax.set_title(title)
+    #ax.set_xticks(ind + width_delta / 2)
+    ax.set_xticks(xticks_locs)
+    ax.set_ylabel(yaxis)
+    xticks = label_rename(xticks, language)
+    ax.set_xticklabels(xticks, rotation=45, ha="right")
+    #ax.legend([p[0] for p in ps], labels)
+    dict_use = english_dict if language == "english" else spanish_dict
+    gb_param = dict_use.get(gb_param.lower()) if dict_use.get(gb_param.lower()) else gb_param
+    yaxis = dict_use.get(yaxis.lower()) if dict_use.get(yaxis.lower()) else yaxis
+    ax.set_xlabel(gb_param.upper())
+    ax.set_ylabel(yaxis.upper())
+    plt.tight_layout()
+    if savefig:
+        plt.savefig(figures_path + save_name + ".png")
+    plt.show()
+
+
+def plot_bars_single_chunk_no_tendency(df, gb_param, yaxis, base_filter, lines_cases, savefig=False, title=None, save_name=None,
+                  width_delta=.2, language="english"):
+    """
+    Returns a line plot with quantile intervals of the RMSE of different levels of either privacy or number of classes.
+    Works only for the non-supervised datasets since there are multiples simulations for provacy levels and numberr of classes.
+
+    """
+    colors2 = {0:"b",1:"r","t":"g", "f":"r","m":"r"}
+
+    fig, ax = plt.subplots()
+    pt = base_filter.get("privacy")
+    if pt is not None:
+        base_filter.pop("privacy")
+        df = df.query("privacy < {pt}".format(pt=pt))
+    df = df[df.uniform == df.uniform2]
+    df = get_base_filtered_df(df, base_filter)
+    ps = list()
+    labels = list()
+    width = 0
+    xticks = list()
+    xticks_locs = list()
+    citer=0
+    if len(lines_cases) > 0:
+        for k, v in lines_cases.items():
+            print(v)
+            v = [v] if not isinstance(v, list) else v
+            for v0 in v:
+                print(v0)
+                dfc = get_single_filter_df(df.copy(), k, v0)
+
+                gb = dfc.groupby([gb_param])[yaxis].mean().reset_index()
+                gb2 = dfc.groupby([gb_param])[yaxis].std().reset_index()
+
+                x = gb[gb_param].unique()
+                xticks.extend(x)
+                ind = np.arange(len(x))
+                xticks_locs.extend(ind+width)
+                curr_p = ax.bar(ind + width, gb[yaxis], width_delta, color=colors2[citer % 2],
+                                bottom=0, yerr=gb2[yaxis]) if gb_param == "privacy" else \
+                    ax.bar(ind + width, gb[yaxis], width_delta, color=colors2[v0],
+                                bottom=0, yerr=gb2[yaxis])
+                citer += 1
+                ps.append(curr_p)
+                param_dict = {k: v0}
+                tt = get_label_name(param_dict, True, language)
+                labels.append(tt)
+                width += width_delta
+    ax.set_title(title)
+    #ax.set_xticks(ind + width_delta / 2)
+    ax.set_xticks(xticks_locs)
+    ax.set_ylabel(yaxis)
+    xticks = label_rename(xticks, language)
+    ax.set_xticklabels(xticks, rotation = 45, ha="right")
+    #ax.legend([p[0] for p in ps], labels)
+    dict_use = english_dict if language == "english" else spanish_dict
+    gb_param = dict_use.get(gb_param.lower()) if dict_use.get(gb_param.lower()) else gb_param
+    yaxis = dict_use.get(yaxis.lower()) if dict_use.get(yaxis.lower()) else yaxis
+    ax.set_xlabel(gb_param.upper())
+    ax.set_ylabel(yaxis.upper())
+    plt.tight_layout()
+    if savefig:
+        plt.savefig(figures_path + save_name + ".png")
+    plt.show()
+
+
+def plot_intervals(df, gb_param, yaxis, base_filter, lines_cases, savefig=False,  title=None, save_name=None,
+                   language="english"):
     """
     Returns a line plot with quantile intervals of the RMSE of different levels of either privacy or number of classes.
     Works only for the non-supervised datasets since there are multiples simulations for provacy levels and numberr of classes.
@@ -329,9 +494,9 @@ def plot_intervals(df, gb_param, yaxis, base_filter, lines_cases, savefig=False,
                 y2 = gb.query("level_1 == 0.50")[yaxis]
                 y3 = gb.query("level_1 == 0.75")[yaxis]
                 ax.fill_between(x, y1, y3, color='grey', alpha='0.5')
-                ax.plot(x,y2)
+                ax.plot(x, y2)
                 param_dict = {k: v0}
-                tt = get_label_name(param_dict, True)
+                tt = get_label_name(param_dict, True, language)
                 labels.append(tt)
                 lines, _ = ax.get_legend_handles_labels()
                 y_max = max(y_max, max(y2))
@@ -343,7 +508,7 @@ def plot_intervals(df, gb_param, yaxis, base_filter, lines_cases, savefig=False,
         y3 = gb.query("level_1 == 0.75")[yaxis]
         ax.fill_between(x, y1, y3, color='grey', alpha='0.5')
         ax.plot(x,y2)
-        tt = get_label_name(base_filter, True)
+        tt = get_label_name(base_filter, True, language)
         labels.append(tt)
         lines, _ = ax.get_legend_handles_labels()
         y_max = max(y_max, max(y2))
@@ -351,13 +516,19 @@ def plot_intervals(df, gb_param, yaxis, base_filter, lines_cases, savefig=False,
     ax.legend(lines, labels, loc='best')
     ax.set_title(title)
     #ax.set_ylim([0, y_max*1.5])
+    dict_use = english_dict if language == "english" else spanish_dict
+    gb_param = dict_use.get(gb_param.lower()) if dict_use.get(gb_param.lower()) else gb_param
+    yaxis = dict_use.get(yaxis.lower()) if dict_use.get(yaxis.lower()) else yaxis
     ax.set_xlabel(gb_param.upper())
     ax.set_ylabel(yaxis.upper())
+    plt.tight_layout()
     if savefig:
         plt.savefig(figures_path + save_name + ".png")
     plt.show()
 
-def plot_intervals_std(df, gb_param, yaxis, base_filter, lines_cases, savefig=False,  title=None, save_name=None):
+
+def plot_intervals_std(df, gb_param, yaxis, base_filter, lines_cases, savefig=False,  title=None, save_name=None,
+                       language="english"):
     """
     Returns a line plot with quantile intervals of the RMSE of different levels of either privacy or number of classes.
     Works only for the non-supervised datasets since there are multiples simulations for provacy levels and numberr of classes.
@@ -386,7 +557,7 @@ def plot_intervals_std(df, gb_param, yaxis, base_filter, lines_cases, savefig=Fa
                 ax.fill_between(x, y1, y3, color='grey', alpha='0.5')
                 ax.plot(x,y2)
                 param_dict = {k: v0}
-                tt = get_label_name(param_dict, True)
+                tt = get_label_name(param_dict, True, language)
                 labels.append(tt)
                 lines, _ = ax.get_legend_handles_labels()
                 y_max = max(y_max, max(y2))
@@ -399,7 +570,7 @@ def plot_intervals_std(df, gb_param, yaxis, base_filter, lines_cases, savefig=Fa
         y3 = gb[yaxis] + gb_std[yaxis]
         ax.fill_between(x, y1, y3, color='grey', alpha='0.5')
         ax.plot(x,y2)
-        tt = get_label_name(base_filter, True)
+        tt = get_label_name(base_filter, True, language)
         labels.append(tt)
         lines, _ = ax.get_legend_handles_labels()
         y_max = max(y_max, max(y2))
@@ -407,14 +578,18 @@ def plot_intervals_std(df, gb_param, yaxis, base_filter, lines_cases, savefig=Fa
     ax.legend(lines, labels, loc='best')
     ax.set_title(title)
     #ax.set_ylim([0, y_max*1.5])
+    dict_use = english_dict if language == "english" else spanish_dict
+    gb_param = dict_use.get(gb_param.lower()) if dict_use.get(gb_param.lower()) else gb_param
+    yaxis = dict_use.get(yaxis.lower()) if dict_use.get(yaxis.lower()) else yaxis
     ax.set_xlabel(gb_param.upper())
     ax.set_ylabel(yaxis.upper())
+    plt.tight_layout()
     if savefig:
         plt.savefig(figures_path + save_name + ".png")
     plt.show()
 
 
-def rocs_by_case(df, base_filter, lines_cases, savefig=False, title=None, save_name=None):
+def rocs_by_case(df, base_filter, lines_cases, savefig=False, title=None, save_name=None, language="english"):
     """
     Gets the ROC plots for all privacy levels and for the sliced frame with the desired parameters 
     """
@@ -440,13 +615,19 @@ def rocs_by_case(df, base_filter, lines_cases, savefig=False, title=None, save_n
             df_roc = pn.DataFrame({"fpr": xs, "tpr": ys}).sort_values(by="fpr", ascending=True)
             df_roc.loc[:, "fpr_dis"] = df_roc["fpr"].map(lambda x: round(x,2))
             gb = df_roc.groupby("fpr_dis")["tpr"].mean().reset_index().sort_values(by="fpr_dis", ascending=True)
+            gb_std = df_roc.groupby("fpr_dis")["tpr"].std().reset_index().sort_values(by="fpr_dis", ascending=True)
 
             x = gb.fpr_dis
             y = gb.tpr.rolling(window=3, center=False).mean() if len(gb) > 10 else gb.tpr
+            y_std = gb_std.tpr.rolling(window=3, center=False).mean() if len(gb) > 10 else gb_std.tpr
+            y1 = y - y_std
+            y3 = y + y_std
+            ax.fill_between(x, y1, y3, color='grey', alpha='0.5')
             ax.plot(x, y)
+
             lines, _ = ax.get_legend_handles_labels()
             param_dict = {k:v0}
-            tt = get_label_name(param_dict)
+            tt = get_label_name(param_dict, True, language)
             labels.append(tt)
 
     ax.legend(lines, labels, loc='best')
@@ -454,13 +635,15 @@ def rocs_by_case(df, base_filter, lines_cases, savefig=False, title=None, save_n
     ax.set_title(tt)
     ax.set_xlabel("FPR")
     ax.set_ylabel("TPR")
+    plt.tight_layout()
     if savefig:
         plt.savefig(figures_path + save_name + ".png")
     plt.show()  
         
 
 def rmse_auc_plot_no_intervals(df, gb_param, yaxis, reals, uniforms, uniforms2, uniform_original,
-                               models, combined_cond=None, savefig=False, title=None, save_name=None):
+                               models, combined_cond=None, savefig=False, title=None, save_name=None,
+                               language="english"):
     """
     Gets the supervised RMSE plot, since non supervised also has RMSE, pending is to check what is the difference between 
     this function and the plot_params, which plots the RMSE for the non supervised case. Both rmse and auc are merged now
@@ -503,7 +686,7 @@ def rmse_auc_plot_no_intervals(df, gb_param, yaxis, reals, uniforms, uniforms2, 
                                     ax.plot(x, y)
                                     if len(gb) > 0:
                                         lines, _ = ax.get_legend_handles_labels()
-                                        tt = get_label_name(param_dict)
+                                        tt = get_label_name(param_dict, False, language)
                                         labels.append(tt)
                         else:
                             param_dict = {"real": real, "uniform": uniform, "uniform_original": uo,
@@ -520,14 +703,110 @@ def rmse_auc_plot_no_intervals(df, gb_param, yaxis, reals, uniforms, uniforms2, 
                             x = gb[gb_param]
                             y = gb[yaxis]
                             ax.plot(x, y)
-                            if len(gb) >0:
+                            if len(gb) > 0:
                                 lines, _ = ax.get_legend_handles_labels()
-                                tt = get_label_name(param_dict)
+                                tt = get_label_name(param_dict, False, language)
                                 labels.append(tt)
     ax.legend(lines, labels, loc='best')
     ax.set_title(title)
+    dict_use = english_dict if language == "english" else spanish_dict
+    gb_param = dict_use.get(gb_param.lower()) if dict_use.get(gb_param.lower()) else gb_param
+    yaxis = dict_use.get(yaxis.lower()) if dict_use.get(yaxis.lower()) else yaxis
     ax.set_xlabel(gb_param.upper())
     ax.set_ylabel(yaxis.upper())
+    plt.tight_layout()
     if savefig:
         plt.savefig(figures_path + save_name + ".png")
     plt.show()
+
+
+def rmse_auc_plot_with_intervals(df, gb_param, yaxis, reals, uniforms, uniforms2, uniform_original,
+                               models, combined_cond=None, savefig=False, title=None, save_name=None,
+                                 language="english"):
+    """
+    Gets the supervised RMSE plot, since non supervised also has RMSE, pending is to check what is the difference between
+    this function and the plot_params, which plots the RMSE for the non supervised case. Both rmse and auc are merged now
+    the only pending situation is the plot_params separation from this function.
+    The difference is that plot params has quantile intervals and this one doesn't. This one can be used for rmse in the
+    supervised case in case quantiles are not needed. The AUC with confidence intervals where can it go? there is not enough
+    simulations.
+
+    yaxis: is either rmse or auc, both lower cased
+    """
+    df = df.query("privacy < 11")
+    fig, ax = plt.subplots()
+    labels = []
+    df = df[df.uniform == df.uniform2]
+    for real in reals:
+        for uniform in uniforms:
+            for uniform2 in uniforms2:
+                for uo in uniform_original:
+                    for model in models:
+                        if combined_cond is not None and isinstance(combined_cond, dict):
+                            for tp, vl in combined_cond.items():
+                                param_dict = {"real":real, "uniform":uniform, "uniform_original":uo,
+                                              "uniform2": uniform2, "model":model}
+                                for col, val in zip([tp]*len(vl), vl):
+                                    dfc = df
+                                    for i, j in enumerate(col):
+                                        dfc = get_single_filter_df(dfc, j, val[i])
+                                        param_dict[j] = val[i]
+                                    dfc = get_single_filter_df(dfc, "real", real)
+                                    dfc = get_single_filter_df(dfc, "uniform", uniform)
+                                    dfc = get_single_filter_df(dfc, "uniform2", uniform2)
+                                    dfc = get_single_filter_df(dfc, "uniform_original", uo)
+                                    dfc = get_single_filter_df(dfc, "model", model)
+
+                                    dfc.loc[:, gb_param] = dfc[gb_param].map(int)
+                                    gb = dfc.sort_values(by="privacy", ascending=True)
+                                    gb = gb.groupby(gb_param)[yaxis].agg(lambda x: np.mean(x)).reset_index()
+                                    x = gb[gb_param]
+                                    y = gb[yaxis]
+                                    ax.plot(x, y)
+
+                                    gb_std = dfc.groupby([gb_param])[yaxis].std().reset_index()
+                                    y1 = (gb[yaxis] - gb_std[yaxis]).map(lambda x: max(x, 0))
+                                    y3 = gb[yaxis] + gb_std[yaxis]
+                                    ax.fill_between(x, y1, y3, color='grey', alpha='0.5')
+
+                                    if len(gb) > 0:
+                                        lines, _ = ax.get_legend_handles_labels()
+                                        tt = get_label_name(param_dict, False, language)
+                                        labels.append(tt)
+                        else:
+                            param_dict = {"real": real, "uniform": uniform, "uniform_original": uo,
+                                          "uniform2": uniform2, "model": model}
+                            dfc = get_single_filter_df(df, "real", real)
+                            dfc = get_single_filter_df(dfc, "uniform", uniform)
+                            dfc = get_single_filter_df(dfc, "uniform2", uniform2)
+                            dfc = get_single_filter_df(dfc, "uniform_original", uo)
+                            dfc = get_single_filter_df(dfc, "model", model)
+
+                            dfc.loc[:, gb_param] = dfc[gb_param].map(int)
+                            gb = dfc.sort_values(by="privacy", ascending=True)
+                            gb = gb.groupby(gb_param)[yaxis].agg(lambda x: np.mean(x)).reset_index()
+                            x = gb[gb_param]
+                            y = gb[yaxis]
+                            ax.plot(x, y)
+
+                            gb_std = dfc.groupby([gb_param])[yaxis].std().reset_index()
+                            y1 = (gb[yaxis] - gb_std[yaxis]).map(lambda x: max(x, 0))
+                            y3 = gb[yaxis] + gb_std[yaxis]
+                            ax.fill_between(x, y1, y3, color='grey', alpha='0.5')
+
+                            if len(gb) >0:
+                                lines, _ = ax.get_legend_handles_labels()
+                                tt = get_label_name(param_dict, False, language)
+                                labels.append(tt)
+    ax.legend(lines, labels, loc='best')
+    ax.set_title(title)
+    dict_use = english_dict if language == "english" else spanish_dict
+    gb_param = dict_use.get(gb_param.lower()) if dict_use.get(gb_param.lower()) else gb_param
+    yaxis = dict_use.get(yaxis.lower()) if dict_use.get(yaxis.lower()) else yaxis
+    ax.set_xlabel(gb_param.upper())
+    ax.set_ylabel(yaxis.upper())
+    plt.tight_layout()
+    if savefig:
+        plt.savefig(figures_path + save_name + ".png")
+    plt.show()
+
