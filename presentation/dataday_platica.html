@@ -30,7 +30,7 @@ class: inverse, center, middle
 class: inverse, middle
 # Dos tipos de sanitización de bases:
 ## Seguridad: impedir el acceso a los datos.
-## Privacidad: tener un acceso contrado a los datos.
+## Privacidad: tener un acceso controlado a los datos.
 ---
 class: inverse, center, middle
 # Privacidad de datos
@@ -80,27 +80,22 @@ Microagregación
 
 Bases Negativas
 ]
-# 
-# 
-| Valor Original | Valor Sanitizado  | Método           |
-| ---------------| ------------------| ---------------- |
-| [1,0,0]        | [0,0.5,0.5]       | Bases Negativas  |  
 
 ---
 class: center, middle
-### Enfoque Sanitización Dummificación
-|     |     0|     1|     2|        `\(0_s\)` |        `\(1_s\)` |        `\(2_s\)` |
+### Enfoque Sanitización Bases Negativas
+|     |     H|     M|     O|        `\(H_s\)` |        `\(M_s\)` |        `\(O_s\)` |
 |  ---| -----| -----| -----| -------------| -------------| -------------|
-|  0  |   1.0|   0.0|   0.0|   `\(\pi_{0,0}\)`|   `\(\pi_{0,1}\)`|   `\(\pi_{0,2}\)`|
-|  1  |   1.0|   0.0|   0.0|   `\(\pi_{1,0}\)`|   `\(\pi_{1,1}\)`|   `\(\pi_{1,2}\)`|
-|  2  |   0.0|   1.0|   0.0|   `\(\pi_{2,0}\)`|   `\(\pi_{2,1}\)`|   `\(\pi_{2,2}\)`|
-|  3  |   1.0|   0.0|   0.0|   `\(\pi_{3,0}\)`|   `\(\pi_{3,1}\)`|   `\(\pi_{3,2}\)`|
-|  4  |   1.0|   0.0|   0.0|   `\(\pi_{4,0}\)`|   `\(\pi_{4,1}\)`|   `\(\pi_{4,2}\)`|
-|  5  |   1.0|   0.0|   0.0|   `\(\pi_{5,0}\)`|   `\(\pi_{5,1}\)`|   `\(\pi_{5,2}\)`|
-|  6  |   1.0|   0.0|   0.0|   `\(\pi_{6,0}\)`|   `\(\pi_{6,1}\)`|   `\(\pi_{6,2}\)`|
-|  7  |   1.0|   0.0|   0.0|   `\(\pi_{7,0}\)`|   `\(\pi_{7,1}\)`|   `\(\pi_{7,2}\)`|
-|  8  |   1.0|   0.0|   0.0|   `\(\pi_{8,0}\)`|   `\(\pi_{8,1}\)`|   `\(\pi_{8,2}\)`|
-|  9  |   0.0|   0.0|   1.0|   `\(\pi_{9,0}\)`|   `\(\pi_{9,1}\)`|   `\(\pi_{9,2}\)`|
+|  0  |   1.0|   0.0|   0.0|   `\(\pi_{0,H}\)`|   `\(\pi_{0,M}\)`|   `\(\pi_{0,O}\)`|
+|  1  |   1.0|   0.0|   0.0|   `\(\pi_{1,H}\)`|   `\(\pi_{1,M}\)`|   `\(\pi_{1,O}\)`|
+|  2  |   0.0|   1.0|   0.0|   `\(\pi_{2,H}\)`|   `\(\pi_{2,M}\)`|   `\(\pi_{2,O}\)`|
+|  3  |   1.0|   0.0|   0.0|   `\(\pi_{3,H}\)`|   `\(\pi_{3,M}\)`|   `\(\pi_{3,O}\)`|
+|  4  |   1.0|   0.0|   0.0|   `\(\pi_{4,H}\)`|   `\(\pi_{4,M}\)`|   `\(\pi_{4,O}\)`|
+|  5  |   1.0|   0.0|   0.0|   `\(\pi_{5,H}\)`|   `\(\pi_{5,M}\)`|   `\(\pi_{5,O}\)`|
+|  6  |   1.0|   0.0|   0.0|   `\(\pi_{6,H}\)`|   `\(\pi_{6,M}\)`|   `\(\pi_{6,O}\)`|
+|  7  |   1.0|   0.0|   0.0|   `\(\pi_{7,H}\)`|   `\(\pi_{7,M}\)`|   `\(\pi_{7,O}\)`|
+|  8  |   1.0|   0.0|   0.0|   `\(\pi_{8,H}\)`|   `\(\pi_{8,M}\)`|   `\(\pi_{8,O}\)`|
+|  9  |   0.0|   0.0|   1.0|   `\(\pi_{9,H}\)`|   `\(\pi_{9,M}\)`|   `\(\pi_{9,O}\)`|
 #### `\(\sum_{j=0}^{nclasses}\pi_{i,j}=1.0\)`, `\(\pi_{i,j}\geq 0\)`
 ---
 # Ventajas de las bases de datos negativas
@@ -122,7 +117,7 @@ class: center, middle
 | ocupación         | 15          |
 | raza              | 5           |
 | género            | 2           |
-| país orígen       | 42          |
+| país origen       | 42          |
 ---
 class: inverse
 # Dentro del intercambio de Privacidad-Utilidad, únicamente nos efocaremos en Utilidad.
@@ -133,27 +128,27 @@ class: inverse
 class: center, bottom, inverse
 background-image: url(file:///home/juanzinser/Documents/plots/dataday/privacy_is_real.png)
 background-size: 512px
-background-position: 42% 10%
+background-position: 45% 10%
 ## Utilidad medida por medio de métodos de aprendizaje de máquina.
 ## No incluir el valor real presenta una mejor utilidad.
 ---
 class: center, bottom, inverse
-background-image: url(file:///home/juanzinser/Documents/plots/dataday/privacy_auc_bar_t.png)
+background-image: url(file:///home/juanzinser/Documents/plots/dataday/privacy_auc_t.png)
 background-size: 512px
-background-position: 42% 10%
+background-position: 45% 10%
 ## Destaca la estabilidad en los dos "escalones".
 ---
 class: center, bottom, inverse
-background-image: url(file:///home/juanzinser/Documents/plots/dataday/privacy_auc_bar_f.png)
+background-image: url(file:///home/juanzinser/Documents/plots/dataday/privacy_auc_f.png)
 background-size: 512px
-background-position: 42% 10%
+background-position: 45% 10%
 ## Destaca la pendiente positiva en los primeros niveles de privacidad.
 ---
 class: center, bottom, inverse
 background-image: url(file:///home/juanzinser/Documents/plots/dataday/uniform_model.png)
 background-size: 512px
-background-position: 42% 10%
-## No pareece haber efecto del modelo con la deistribución de pesos.
+background-position: 45% 10%
+## No parece haber efecto del modelo con la distribución de pesos.
 ---
 class: center, bottom, inverse
 background-image: url(file:///home/juanzinser/Documents/plots/dataday/include_real_model.png)
@@ -181,21 +176,21 @@ class: center, bottom
 class: center, bottom, inverse
 background-image: url(file:///home/juanzinser/Documents/plots/dataday/reconstruction_simulated_example.png)
 background-size: 512px
-background-position: 42% 10%
+background-position: 45% 10%
 ## Ejemplo de reconstrucción de histograma
 ## Chi-cuadrada `\(\chi^2  = \sum_{i=1}^n\frac{(NIS_i-CIS_i)^2}{CIS_i}\)`
 ---
 class: center, bottom, inverse
 background-image: url(file:///home/juanzinser/Documents/plots/dataday/privacy.png)
 background-size: 512px
-background-position: 42% 10%
-## Después de un nivel de privacidad mayor al 40%, pierde relevancia la inclusión o no inclusión del valor real. 
+background-position: 45% 10%
+## Después de un nivel de dispersión mayor al 40%, pierde relevancia la inclusión o no inclusión del valor real. 
 ---
 class: center, bottom, inverse
 background-image: url(file:///home/juanzinser/Documents/plots/dataday/nclasses.png)
 background-size: 512px
 background-position: 42% 10%
-## El pero desempeño ocurre cuando la distribución de los datos es uniforme y los datos originales tienen una distribución exponencial.
+## El peor desempeño ocurre cuando la distribución de los datos es uniforme y los datos originales tienen una distribución exponencial.
 ---
 class: middle, center, inverse
 background-image: url(resources/DataDay-logo.png)
