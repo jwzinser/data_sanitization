@@ -19,6 +19,13 @@ def expo_weights(nclasses):
     return weights_to_probabilities(weights)
 
 
+def all_entries_vector(x):
+    xs = ""
+    for xi in x:
+        xs += str(xi) + ","
+    return xs[:-1]
+
+
 def weights_to_probabilities(weights_vector, sum_to=1.):
     if sum(weights_vector) > 0:
         return np.array([sum_to * float(i) / sum(weights_vector) for
