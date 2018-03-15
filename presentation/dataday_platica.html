@@ -84,22 +84,19 @@ Bases Negativas
 ---
 class: center, middle
 ### Enfoque Sanitización Bases Negativas
-|     |     H|     M|     O|        `\(H_s\)` |        `\(M_s\)` |        `\(O_s\)` |
+|     |     M|     C|     E|        `\(M_s\)` |        `\(C_s\)` |        `\(E_s\)` |
 |  ---| -----| -----| -----| -------------| -------------| -------------|
-|  0  |   1.0|   0.0|   0.0|   `\(\pi_{0,H}\)`|   `\(\pi_{0,M}\)`|   `\(\pi_{0,O}\)`|
-|  1  |   1.0|   0.0|   0.0|   `\(\pi_{1,H}\)`|   `\(\pi_{1,M}\)`|   `\(\pi_{1,O}\)`|
-|  2  |   0.0|   1.0|   0.0|   `\(\pi_{2,H}\)`|   `\(\pi_{2,M}\)`|   `\(\pi_{2,O}\)`|
-|  3  |   1.0|   0.0|   0.0|   `\(\pi_{3,H}\)`|   `\(\pi_{3,M}\)`|   `\(\pi_{3,O}\)`|
-|  4  |   1.0|   0.0|   0.0|   `\(\pi_{4,H}\)`|   `\(\pi_{4,M}\)`|   `\(\pi_{4,O}\)`|
-|  5  |   1.0|   0.0|   0.0|   `\(\pi_{5,H}\)`|   `\(\pi_{5,M}\)`|   `\(\pi_{5,O}\)`|
-|  6  |   1.0|   0.0|   0.0|   `\(\pi_{6,H}\)`|   `\(\pi_{6,M}\)`|   `\(\pi_{6,O}\)`|
-|  7  |   1.0|   0.0|   0.0|   `\(\pi_{7,H}\)`|   `\(\pi_{7,M}\)`|   `\(\pi_{7,O}\)`|
-|  8  |   1.0|   0.0|   0.0|   `\(\pi_{8,H}\)`|   `\(\pi_{8,M}\)`|   `\(\pi_{8,O}\)`|
-|  9  |   0.0|   0.0|   1.0|   `\(\pi_{9,H}\)`|   `\(\pi_{9,M}\)`|   `\(\pi_{9,O}\)`|
+|  0  |   1.0|   0.0|   0.0|   `\(\pi_{0,M}\)`|   `\(\pi_{0,C}\)`|   `\(\pi_{0,E}\)`|
+|  1  |   1.0|   0.0|   0.0|   `\(\pi_{1,M}\)`|   `\(\pi_{1,C}\)`|   `\(\pi_{1,E}\)`|
+|  2  |   0.0|   1.0|   0.0|   `\(\pi_{2,M}\)`|   `\(\pi_{2,C}\)`|   `\(\pi_{2,E}\)`|
+|  3  |   1.0|   0.0|   0.0|   `\(\pi_{3,M}\)`|   `\(\pi_{3,C}\)`|   `\(\pi_{3,E}\)`|
+|  4  |   1.0|   0.0|   0.0|   `\(\pi_{4,M}\)`|   `\(\pi_{4,C}\)`|   `\(\pi_{4,E}\)`|
+|  5  |   1.0|   0.0|   0.0|   `\(\pi_{5,M}\)`|   `\(\pi_{5,C}\)`|   `\(\pi_{5,E}\)`|
+|  6  |   1.0|   0.0|   0.0|   `\(\pi_{6,M}\)`|   `\(\pi_{6,C}\)`|   `\(\pi_{6,E}\)`|
+|  7  |   1.0|   0.0|   0.0|   `\(\pi_{7,M}\)`|   `\(\pi_{7,C}\)`|   `\(\pi_{7,E}\)`|
+|  8  |   1.0|   0.0|   0.0|   `\(\pi_{8,M}\)`|   `\(\pi_{8,C}\)`|   `\(\pi_{8,E}\)`|
+|  9  |   0.0|   0.0|   1.0|   `\(\pi_{9,M}\)`|   `\(\pi_{9,C}\)`|   `\(\pi_{9,E}\)`|
 #### `\(\sum_{j=0}^{nclasses}\pi_{i,j}=1.0\)`, `\(\pi_{i,j}\geq 0\)`
----
-# Ventajas de las bases de datos negativas
-## Mayor grado de automatización
 ---
 class: center, middle
 # Características del operador propuesto
@@ -120,7 +117,7 @@ class: center, middle
 | país origen       | 42          |
 ---
 class: inverse
-# Dentro del intercambio de Privacidad-Utilidad, únicamente nos efocaremos en Utilidad.
+# Nos efocaremos en Utilidad dentro del intercambio de Privacidad-Utilidad.
 # Dos formas de medir la utilidad de la tabla.
 + ## Utilidad medida por medio de métodos de aprendizaje de máquina.
 + ## Utilidad medida por medio de reconstrucción de histogramas. 
@@ -159,7 +156,7 @@ background-position: 45% 5%
 class: center, bottom
 ## Ejemplo de reconstrucción de histograma
 
-|Original|0|1|2| |Sanitizada|0|1|2|
+|Original|M|C|E| |Sanitizada|M|C|E|
 |--|--|--|--|--|--|--|--|--|
 |0|1.0|0.0|0.0||0|0.0|0.5|0.5|
 |1|1.0|0.0|0.0||1|0.0|0.5|0.5|
@@ -201,12 +198,12 @@ background-position: 93% 5%
 github: [jwzinser](https://github.com/jwzinser)
 
 ### Referencias
-[*Dwork*](http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/090310.pdf) - Cynthia Dwork 
+[*Dwork*](https://link.springer.com/content/pdf/10.1007/978-3-540-30576-7_20.pdf) - Cynthia Dwork 
 
-[*Esponda*](http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/090310.pdf) - Fernando Esponda 
+[*Esponda*](http://agl.cs.unm.edu/~forrest/publications/final-2007.pdf) - Fernando Esponda 
 
 .footnote[ 
-  [Repositorio con la plática](http://github.com/jwzinser/data_sanitization): jwzinser/data_sanitization 
+  [Repositorio con la plática](http://github.com/jwzinser/data_sanitization): github.com/jwzinser/data_sanitization 
 ]
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
